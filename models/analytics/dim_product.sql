@@ -8,11 +8,18 @@ WITH dim_product__souce AS (
     stock_item_name AS product_name,
     brand AS brand_name
   FROM dim_product__souce
+  ),
+  dim_product_cast_type AS (
+  SELECT 
+    CAST(product_key AS INTEGER) as product_key,
+    CAST(product_name AS STRING) as product_name,
+    CAST (brand_name AS STRING) as brand_name
+  FROM dim_product__renamecolumn
   )
 
 SELECT 
-  CAST(product_key AS INTEGER) as product_key,
-  CAST(product_name AS STRING) as product_name,
-  CAST (brand_name AS STRING) as brand_name
-FROM dim_product__renamecolumn
+  product_key,
+  product_name,
+  brand_name
+FROM dim_product_cast_type
 
