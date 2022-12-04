@@ -21,5 +21,4 @@ WITH dim_purchasing_supplier__source AS (
 SELECT 
   supplier_key,
   supplier_name
-FROM dim_purchasing_supplier__cast_type
-
+FROM dim_purchasing_supplier__cast_type 
