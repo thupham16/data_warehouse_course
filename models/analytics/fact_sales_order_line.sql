@@ -33,7 +33,7 @@ SELECT
   fact_sales_order_line.sales_order_key,
   fact_sales_order.customer_key
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
-LEFT JOIN data-modeling-370410.wide_world_importers_dwh_staging.stg_fact_sales_order AS fact_sales_order
+LEFT JOIN {{ ref('stg_fact_sales_order') }} AS fact_sales_order
 ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
 
   
