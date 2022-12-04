@@ -25,13 +25,15 @@ WITH fact_sales_order_line__source AS (
 )  
 
 SELECT 
-  sales_order_line_key,
-  quantity,
-  unit_price,
-  product_key,
-  quantity * unit_price AS gross_amount,
-  sales_order_key
-FROM fact_sales_order_line__cast_type
-
+  fact_sales_order_line.sales_order_line_key,
+  fact_sales_order_line.quantity,
+  fact_sales_order_line.unit_price,
+  fact_sales_order_line.product_key,
+  fact_sales_order_line.quantity * fact_sales_order_line.unit_price AS gross_amount,
+  fact_sales_order_line.sales_order_key,
+  fact_sales_order.customer_key
+FROM fact_sales_order_line__cast_type AS fact_sales_order_line
+LEFT JOIN data-modeling-370410.wide_world_importers_dwh_staging.stg_fact_sales_order AS fact_sales_order
+ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
 
   
