@@ -32,7 +32,7 @@ SELECT
   fact_sales_order_line.quantity * fact_sales_order_line.unit_price AS gross_amount,
   fact_sales_order_line.sales_order_key,
   fact_sales_order.customer_key,
-  fact_sales_order.picked_by_person_key
+  COALESCE(fact_sales_order.picked_by_person_key,-1) AS picked_by_person_key
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ ref ('stg_fact_sales_order')}} AS fact_sales_order
 ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
