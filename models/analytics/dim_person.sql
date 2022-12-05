@@ -1,24 +1,24 @@
 
-WITH app_people__source AS (
+WITH dim_person__source AS (
   SELECT  *
   FROM `vit-lam-data.wide_world_importers.application__people`
 ),
 
-  app_people__rename AS (
+  dim_person__rename AS (
   SELECT 
     person_id AS person_key,
     full_name
-  FROM app_people__source
+  FROM dim_person__source
   ),
 
-  app_people__concast_type AS (
+  dim_person__concast_type AS (
   SELECT 
     CAST (person_key AS INTEGER) AS person_key,
     CAST (full_name AS STRING) AS full_name
-  FROM app_people__rename
+  FROM dim_person__rename
   )
 
 SELECT 
   person_key,
   full_name 
-FROM app_people__concast_type
+FROM dim_person__concast_type
