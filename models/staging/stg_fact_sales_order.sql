@@ -25,7 +25,7 @@ WITH fact_sales_order__source AS (
       CAST (backorder_order_key AS INTEGER) AS backorder_order_key,
       CAST (order_date AS date) as order_date,
       CAST (expected_delivery_date AS date) as expected_delivery_date,
-      CAST (is_undersupply_backordered AS BOOLEAN) AS is_undersupply_backordered
+      CAST (is_undersupply_backordered AS BOOLEAN) AS is_undersupply_backordered_boolean
 
     FROM fact_sales_order__rename_column
   ),
@@ -33,8 +33,8 @@ WITH fact_sales_order__source AS (
   fact_sales_order__convert_boolean AS (
     SELECT *,
       CASE 
-        WHEN is_undersupply_backordered IS TRUE THEN 'Undersupply Backordered'
-        WHEN is_undersupply_backordered IS FALSE THEN 'Not Undersupply Backordered'
+        WHEN is_undersupply_backordered_boolean IS TRUE THEN 'Undersupply Backordered'
+        WHEN is_undersupply_backordered_boolean IS FALSE THEN 'Not Undersupply Backordered'
       ELSE 'Undefined'
       END AS is_undersupply_backordered
     
@@ -49,5 +49,6 @@ SELECT
   COALESCE(salesperson_person_key,0) AS salesperson_person_key,
   COALESCE(backorder_order_key,0) AS backorder_order_key,
   order_date,
-  expected_delivery_date
+  expected_delivery_date,
+  is_undersupply_backordered
 FROM fact_sales_order__convert_boolean
