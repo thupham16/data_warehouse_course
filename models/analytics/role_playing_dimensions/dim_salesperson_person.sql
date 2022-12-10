@@ -7,3 +7,6 @@ SELECT
   is_salesperson
 
 FROM {{ref ('dim_person')}}
+WHERE 
+  is_salesperson = 'Salesperson'
+  OR person_key IN (0,1)
