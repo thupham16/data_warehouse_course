@@ -12,8 +12,8 @@ WITH dim_product__souce AS (
     brand AS brand_name,
     supplier_id AS supplier_key,
     color_id AS color_key,
-    unit_package_id AS unit_package_key,
-    outer_package_id AS outer_package_key
+    unit_package_id AS unit_package_type_key,
+    outer_package_id AS outer_package_type_key
 
   FROM dim_product__souce
   ),
@@ -27,8 +27,8 @@ WITH dim_product__souce AS (
     CAST (brand_name AS STRING) as brand_name,
     CAST (supplier_key AS INTEGER) AS supplier_key,
     CAST (color_key AS INTEGER) AS color_key,
-    CAST (unit_package_key AS INTEGER) AS unit_package_key,
-    CAST (outer_package_key AS INTEGER) AS outer_package_key
+    CAST (unit_package_type_key AS INTEGER) AS unit_package_type_key,
+    CAST (outer_package_type_key AS INTEGER) AS outer_package_type_key
 
   FROM dim_product__renamecolumn
   ),
@@ -55,9 +55,9 @@ SELECT
   COALESCE(dim_supplier.supplier_name,'Undefined') AS supplier_name,
   dim_product.color_key,
   COALESCE(dim_color.color_name,'Undefined') AS color_name,
-  dim_product.unit_package_key,
+  dim_product.unit_package_type_key,
   COALESCE(dim_unit_package_type.package_type_name,'Undefined') AS unit_package_type_name,
-  dim_product.outer_package_key,
+  dim_product.outer_package_type_key,
   COALESCE(dim_outer_package_type.package_type_name,'Undefined') AS outer_package_type_name
 
 FROM dim_product__convert_boolean AS dim_product
@@ -69,7 +69,7 @@ LEFT JOIN vit-lam-data.wide_world_importers.warehouse__colors AS dim_color
 ON dim_product.color_key = dim_color.color_id
 
 LEFT JOIN {{ref ('stg_dim_package_type')}} AS dim_unit_package_type
-ON dim_product.unit_package_key = dim_unit_package_type.package_type_key
+ON dim_product.unit_package_type_key = dim_unit_package_type.package_type_key
 
 LEFT JOIN {{ref ('stg_dim_package_type')}} AS dim_outer_package_type
-ON dim_product.outer_package_key = dim_outer_package_type.package_type_key
+ON dim_product.outer_package_type_key = dim_outer_package_type.package_type_key
