@@ -21,4 +21,4 @@ SELECT
   package_type_key,
   package_type_name
 
-FROM dim_package_type__cast_type
+FROM dim_package_type__cast_type 
