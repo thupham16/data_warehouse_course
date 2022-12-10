@@ -77,5 +77,5 @@ ON dim_buying_group.buying_group_key = dim_customer.buying_group_key
 LEFT JOIN {{ref('stg_dim_delivery_method')}} AS dim_delivery_method
 ON dim_delivery_method.delivery_method_key = dim_customer.delivery_method_key
 
-LEFT JOIN {{ref ('stg_dim_city_state_province')}} AS dim_city_state_province
-ON dim_city_state_province.city_key = dim_customer.delivery_city_key
+LEFT JOIN {{ref ('stg_dim_city')}} AS dim_city
+ON dim_city.city_key = dim_customer.delivery_city_key
