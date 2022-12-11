@@ -62,9 +62,9 @@ SELECT
   dim_customer.delivery_method_key,
   COALESCE(dim_delivery_method.delivery_method_name,'Undefined') AS delivery_method_name,
   dim_customer.delivery_city_key,
-  COALESCE(dim_city_state_province.city_name,'Undefined') AS delivery_city_name,
-  dim_city_state_province.state_province_key,
-  COALESCE(dim_city_state_province.state_province_name,'Undefined') AS delivery_state_name,
+  COALESCE(dim_city.city_name,'Undefined') AS delivery_city_name,
+  dim_city.state_province_key,
+  COALESCE(dim_city.state_province_name,'Undefined') AS delivery_state_name,
   dim_customer.account_opened_date
 
 FROM dim_customer__convert_boolean AS dim_customer 
