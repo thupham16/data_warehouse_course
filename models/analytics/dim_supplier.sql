@@ -24,7 +24,7 @@ SELECT
   dim_supplier.supplier_key,
   dim_supplier.supplier_name,
   dim_supplier.supplier_category_key,
-  dim_supplier_category.supplier_category_name
+  COALESCE(dim_supplier_category.supplier_category_name,'Undefined') AS supplier_category_name
 FROM dim_purchasing_supplier__cast_type AS dim_supplier
-JOIN {{ ref ('stg_dim_supplier_category')}} AS dim_supplier_category
+LEFT JOIN {{ ref ('stg_dim_supplier_category')}} AS dim_supplier_category
 ON dim_supplier.supplier_category_key = dim_supplier_category.supplier_category_key
