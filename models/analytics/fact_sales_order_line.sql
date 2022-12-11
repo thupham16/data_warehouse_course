@@ -37,7 +37,7 @@ SELECT
   fact_sales_order_line.sales_order_line_key,
   fact_sales_order_line.sales_order_key,
   fact_sales_order_line.product_key,
-  fact_sales_order_line.package_type_key,
+  COALESCE(fact_sales_order_line.package_type_key,0) AS package_type_key,
   COALESCE(fact_sales_order.picked_by_person_key,-1) AS picked_by_person_key,
   COALESCE(fact_sales_order.salesperson_person_key,-1) AS salesperson_person_key,
   fact_sales_order.customer_key,
