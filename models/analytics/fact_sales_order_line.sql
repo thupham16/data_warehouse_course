@@ -37,7 +37,6 @@ SELECT
   fact_sales_order_line.sales_order_line_key,
   fact_sales_order_line.sales_order_key,
   fact_sales_order_line.product_key,
-  COALESCE(fact_sales_order_line.package_type_key,0) AS package_type_key,
   COALESCE(fact_sales_order.picked_by_person_key,-1) AS picked_by_person_key,
   COALESCE(fact_sales_order.salesperson_person_key,-1) AS salesperson_person_key,
   fact_sales_order.customer_key,
@@ -50,10 +49,14 @@ SELECT
   fact_sales_order.order_date,
   fact_sales_order.expected_delivery_date,
   fact_sales_order.backorder_order_key,
-  fact_sales_order.is_undersupply_backordered
+  CONCAT(fact_sales_order.is_undersupply_backordered,
+  ',',
+  fact_sales_order_line.package_type_key
+  ) AS sales_order_indicator_key
 
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
-LEFT JOIN {{ ref('stg_fact_sales_order')}} AS fact_sales_order
+LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
 ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
-
+LEFT JOIN {{ref('stg_dim_package_type')}} AS dim_package_type
+ON fact_sales_order_line.package_type_key = dim_package_type.package_type_key
 
