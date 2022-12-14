@@ -9,9 +9,7 @@ UNION ALL
 SELECT  
   CONCAT(dim_is_undersupply_backordered.is_undersupply_backordered,
   ',',
-  dim_package_type.package_type_key,
-  ',',
-  dim_package_type.package_type_name
+  dim_package_type.package_type_key
   ) AS sales_order_line_indicator_key,
   is_undersupply_backordered,
   dim_package_type.package_type_key,
