@@ -49,10 +49,12 @@ SELECT
   fact_sales_order.order_date,
   fact_sales_order.expected_delivery_date,
   fact_sales_order.backorder_order_key,
-  CONCAT(fact_sales_order.is_undersupply_backordered,
-  ',',
-  fact_sales_order_line.package_type_key
-  ) AS sales_order_indicator_key
+  FARM_FINGERPRINT(
+    CONCAT(fact_sales_order.is_undersupply_backordered,
+          ',',
+          fact_sales_order_line.package_type_key
+          )
+   ) AS sales_order_indicator_key
 
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
