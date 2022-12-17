@@ -5,23 +5,18 @@ models:
       - name: sales_order_line_key
         tests:
           - not_null
-    columns:
       - name: sales_order_key
         tests:
           - not_null  
-    columns:
       - name: product_key
         tests:
           - not_null
-    columns:
       - name: salesperson_person_key
         tests:
           - not_null  
-    columns:
       - name: customer_key
         tests:
           - not_null
-    columns:
       - name: sales_order_indicator_key
         tests:
           - not_null  
