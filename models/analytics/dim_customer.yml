@@ -21,16 +21,28 @@ models:
       - name: customer_category_key
         tests:
           - not_null
+          - relationships:
+              to: ref('stg_dim_customer_category')
+              field: customer_category_key
       - name: customer_category_name
         tests:
           - not_null  
       - name: delivery_method_key
         tests:
           - not_null
+          - relationships:
+              to: ref('stg_dim_delivery_method')
+              field: delivery_method_key
       - name: delivery_city_key
         tests:
           - not_null
+          - relationships:
+              to: ref('stg_dim_city')
+              field: city_key
       - name: state_province_key
         tests:
-          - not_null    
+          - not_null
+          - relationships:
+              to: ref('stg_dim_state')
+              field: state_province_key    
       
