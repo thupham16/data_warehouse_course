@@ -11,10 +11,14 @@ models:
           - not_null  
       - name: is_statement_sent
         tests:
-          - not_null  
+          - not_null
+          - accepted_values:
+              values: [ 'Statement Sent', 'Not Statement Sent']
       - name: is_on_credit_hold
         tests:
           - not_null  
+          - accepted_values:
+              values: [ 'Not On Credit Hold', 'On Credit Hold']
       - name: payment_days
         tests:
           - not_null  
