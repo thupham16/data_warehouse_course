@@ -1,6 +1,10 @@
 version: 2
 models:
   - name: fact_sales_order_line
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('sales__order_lines')
+
     columns:
       - name: sales_order_line_key
         tests:
@@ -40,7 +44,7 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               expression: '= quantity * unit_price'
-              
+
       - name: sales_order_indicator_key
         tests:
           - not_null  
