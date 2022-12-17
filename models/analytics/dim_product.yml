@@ -5,15 +5,12 @@ models:
       - name: product_key
         tests:
           - not_null
-    columns:
       - name: supplier_key
         tests:
           - not_null  
-    columns:
       - name: unit_package_type_key
         tests:
           - not_null
-    columns:
       - name: outer_package_type_key
         tests:
           - not_null  
