@@ -24,6 +24,7 @@ WITH fact_external_target_salesperson__source AS (
 SELECT 
   year_month
   , salesperson_person_key
-  , target_revenue
+  , SUM(target_revenue) AS target_revenue
 
 FROM fact_external_target_salesperson__cast_type
+GROUP BY 1, 2
