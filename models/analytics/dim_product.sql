@@ -54,7 +54,7 @@ WITH dim_product__souce AS (
       COALESCE(dim_product.brand_name, 'Undefined') AS brand_name,
       dim_product.supplier_key,
       COALESCE(dim_supplier.supplier_name,'Undefined') AS supplier_name,
-      dim_product.color_key,
+      COALESCE(dim_product.color_key, 0) AS color_key,
       COALESCE(dim_color.color_name,'Undefined') AS color_name,
       dim_product.unit_package_type_key,
       COALESCE(dim_unit_package_type.package_type_name,'Undefined') AS unit_package_type_name,
@@ -67,8 +67,8 @@ WITH dim_product__souce AS (
     LEFT JOIN {{ref ('dim_supplier') }} AS dim_supplier
       ON dim_product.supplier_key = dim_supplier.supplier_key
 
-    LEFT JOIN vit-lam-data.wide_world_importers.warehouse__colors AS dim_color
-      ON dim_product.color_key = dim_color.color_id
+    LEFT JOIN {{ref('stg_dim_color')}} AS dim_color
+      ON dim_product.color_key = dim_color.color_key
 
     LEFT JOIN {{ref ('stg_dim_package_type')}} AS dim_unit_package_type
       ON dim_product.unit_package_type_key = dim_unit_package_type.package_type_key
