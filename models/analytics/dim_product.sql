@@ -59,7 +59,8 @@ SELECT
   COALESCE(dim_unit_package_type.package_type_name,'Undefined') AS unit_package_type_name,
   dim_product.outer_package_type_key,
   COALESCE(dim_outer_package_type.package_type_name,'Undefined') AS outer_package_type_name
-
+  , dim_external_stock_item.category_key
+  
 FROM dim_product__convert_boolean AS dim_product
 
 LEFT JOIN {{ref ('dim_supplier') }} AS dim_supplier
@@ -73,3 +74,6 @@ ON dim_product.unit_package_type_key = dim_unit_package_type.package_type_key
 
 LEFT JOIN {{ref ('stg_dim_package_type')}} AS dim_outer_package_type
 ON dim_product.outer_package_type_key = dim_outer_package_type.package_type_key
+
+LEFT JOIN {{ref('stg_dim_external_stock_item')}} AS dim_external_stock_item
+USING (product_key)
