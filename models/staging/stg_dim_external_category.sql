@@ -15,24 +15,10 @@ WITH dim_external_category__source AS (
   SELECT 
     CAST(category_key AS INTEGER) AS category_key
     , CAST(category_name AS STRING) AS category_name
-    , CAST(parent_category_key AS STRING) AS parent_category_key
-    , CAST(category_level AS STRING) AS category_level
+    , CAST(parent_category_key AS INTEGER) AS parent_category_key
+    , CAST(category_level AS INTEGER) AS category_level
     
   FROM dim_external_category__rename
- ),
-
- dim_external_category__add_undefined_record AS (
-   SELECT
-    *
-   FROM dim_external_category__cast_type
-
-   UNION ALL
-
-   SELECT
-   0 AS category_key
-   , 'Undefined' AS category_name
-   , 'UNDEFINED' AS parent_category_key
-   , 'UNDEFINED' AS category_level
  )
 
 SELECT 
@@ -40,4 +26,4 @@ SELECT
   , category_name
   , parent_category_key
   , category_level
-FROM dim_external_category__add_undefined_record
+FROM dim_external_category__cast_type
