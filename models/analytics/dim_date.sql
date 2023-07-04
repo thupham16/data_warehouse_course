@@ -10,7 +10,7 @@ SELECT
   , DATE_TRUNC(date, MONTH) as year_month
   , FORMAT_DATETIME ("%B", date) AS month
   , DATE_TRUNC(date, YEAR) as year
-  , EXTRACT(YEAR FROM date) AS year_number,
+  , EXTRACT(YEAR FROM date) AS year_number
 
 FROM UNNEST(GENERATE_DATE_ARRAY('2013-01-01', '2030-12-31')) AS date
 ORDER BY 1
