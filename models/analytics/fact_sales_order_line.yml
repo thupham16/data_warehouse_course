@@ -52,7 +52,7 @@ models:
           - dbt_utils.expression_is_true:
               expression: '= quantity * unit_price'
 
-      - name: sales_order_indicator_key
+      - name: sales_order_line_indicator_key
         tests:
           - not_null  
           - relationships:
