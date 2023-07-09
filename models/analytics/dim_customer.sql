@@ -99,4 +99,4 @@ LEFT JOIN {{ref ('dim_person')}}
   ON dim_person.person_key = dim_customer.primary_contact_person_key
 
 LEFT JOIN dim_customer__convert_boolean AS dim_bill_to_customer
-  ON dim_customer.customer_key = dim_bill_to_customer.bill_to_customer_key
+  ON dim_customer.bill_to_customer_key = dim_bill_to_customer.customer_key
