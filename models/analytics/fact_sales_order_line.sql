@@ -54,7 +54,7 @@ SELECT
           ',',
           fact_sales_order_line.package_type_key
           )
-   ) AS sales_order_indicator_key
+   ) AS sales_order_line_indicator_key
 
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
