@@ -4,6 +4,9 @@ WITH dim_is_undersupply_backordered AS (
 UNION ALL
   SELECT
    'Undersupply Backordered'AS is_undersupply_backordered
+UNION ALL
+  SELECT
+   'Undefined'AS is_undersupply_backordered
 )
 
 SELECT  
