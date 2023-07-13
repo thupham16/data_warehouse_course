@@ -97,8 +97,8 @@ SELECT
   , outer_package_type_name
   , category_key
   , COALESCE(dim_external_category.category_name,'Undefined') AS category_name
-  , COALESCE(dim_external_category.parent_category_key,'UNDEFINED') AS parent_category_key
-  , COALESCE(dim_external_category.category_level,'UNDEFINED') AS category_level
+  , COALESCE(dim_external_category.parent_category_key, 0) AS parent_category_key
+  , COALESCE(dim_external_category.category_level, 0) AS category_level
 
 FROM dim_product__join_1
 LEFT JOIN {{ref('stg_dim_external_category')}} AS dim_external_category USING (category_key)
