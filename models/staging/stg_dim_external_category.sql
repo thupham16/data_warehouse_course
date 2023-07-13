@@ -21,9 +21,23 @@ WITH dim_external_category__source AS (
   FROM dim_external_category__rename
  )
 
+, dim_external_category__add_undefined_record AS (
+   SELECT
+    *
+   FROM dim_external_category__cast_type
+
+   UNION ALL
+
+   SELECT
+   0 AS category_key
+   , 'Undefined' AS category_name
+   , 0 AS parent_category_key
+   , 0 AS category_level
+ )
+
 SELECT 
   category_key
   , category_name
   , parent_category_key
   , category_level
-FROM dim_external_category__cast_type
+FROM dim_external_category__add_undefined_record
