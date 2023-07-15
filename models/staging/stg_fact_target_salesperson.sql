@@ -7,7 +7,7 @@ WITH fact_external_target_salesperson__source AS (
   SELECT
     year_month
     , salesperson_person_id AS salesperson_person_key
-    , target_revenue
+    , target_revenue AS target_gross_amount
 
   FROM fact_external_target_salesperson__source
 )
@@ -16,7 +16,7 @@ WITH fact_external_target_salesperson__source AS (
   SELECT 
     CAST(year_month AS DATE) AS year_month
     , CAST(salesperson_person_key AS INTEGER) AS salesperson_person_key
-    , CAST(target_revenue AS NUMERIC) AS target_revenue
+    , CAST(target_gross_amount AS NUMERIC) AS target_gross_amount
 
   FROM fact_external_target_salesperson__rename_column
 )
@@ -24,7 +24,7 @@ WITH fact_external_target_salesperson__source AS (
 SELECT 
   year_month
   , salesperson_person_key
-  , SUM(target_revenue) AS target_revenue
+  , SUM(target_gross_amount) AS target_gross_amount
 
 FROM fact_external_target_salesperson__cast_type
 GROUP BY 1, 2
