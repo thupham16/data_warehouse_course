@@ -56,6 +56,7 @@ SELECT
         , fact_purchase_order.is_order_finalized)
       ) AS purchase_order_line_indicator_key
   , fact_purchase_order.order_date
+  , fact_purchase_order.expected_delivery_date
   , fact_purchase_order_line.ordered_outers
   , fact_purchase_order_line.received_outers
   , fact_purchase_order_line.expected_unit_price_per_outer
