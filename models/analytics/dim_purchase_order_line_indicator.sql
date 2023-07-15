@@ -30,7 +30,9 @@ SELECT
       , ','
       , is_order_finalized)
     ) AS purchase_order_line_indicator_key
+    , dim_package_type.package_type_key
     , dim_package_type.package_type_name
+    , dim_delivery_method.delivery_method_key
     , dim_delivery_method.delivery_method_name
     , is_order_line_finalized
     , is_order_finalized
