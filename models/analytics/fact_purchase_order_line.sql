@@ -12,7 +12,7 @@ WITH fact_purchase_order_line__source AS (
       , ordered_outers
       , received_outers
       , is_order_line_finalized
-
+      , expected_unit_price_per_outer
     FROM fact_purchase_order_line__source
 )
 
@@ -24,6 +24,7 @@ WITH fact_purchase_order_line__source AS (
       , CAST(package_type_key AS INTEGER) AS package_type_key 
       , CAST(ordered_outers AS NUMERIC) AS ordered_outers 
       , CAST(received_outers AS NUMERIC) AS received_outers 
+      , CAST(expected_unit_price_per_outer AS NUMERIC) AS expected_unit_price_per_outer 
       , CAST(is_order_line_finalized AS BOOLEAN) AS is_order_line_finalized_boolean
 
     FROM fact_purchase_order_line__rename_column
@@ -43,7 +44,7 @@ SELECT
   fact_purchase_order_line.purchase_order_line_key
   , purchase_order_key
   , fact_purchase_order_line.product_key
-  , COALESCE(fact_purchase_order.supplier_key, 0) AS supplier_key 
+  , COALESCE(fact_purchase_order.supplier_key, -1) AS supplier_key 
   , COALESCE(fact_purchase_order.contact_person_key, -1) AS contact_person_key 
   , FARM_FINGERPRINT(
       CONCAT(fact_purchase_order_line.package_type_key
@@ -57,6 +58,7 @@ SELECT
   , fact_purchase_order.order_date
   , fact_purchase_order_line.ordered_outers
   , fact_purchase_order_line.received_outers
+  , fact_purchase_order_line.expected_unit_price_per_outer
 
 FROM fact_purchase_order_line__convert_boolean AS fact_purchase_order_line
 LEFT JOIN {{ref ('stg_fact_purchase_order')}} AS fact_purchase_order
