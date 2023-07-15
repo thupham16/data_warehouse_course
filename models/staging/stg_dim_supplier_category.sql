@@ -26,6 +26,12 @@ WITH dim_supplier_category__source AS (
   SELECT 
     0 AS supplier_category_key
     , 'Undefined' AS supplier_category_name
+
+  UNION ALL
+
+  SELECT 
+    -1 AS supplier_category_key
+    , 'Error' AS supplier_category_name
 )
 
 SELECT 
