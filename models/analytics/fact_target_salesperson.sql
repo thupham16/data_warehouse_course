@@ -1,6 +1,6 @@
 WITH fact_target_salesperson__gross_amount AS (
     SELECT 
-      DATE_TRUNC(order_date, month) AS year_month
+      CAST(DATE_TRUNC(order_date, month) AS DATE) AS year_month
       , salesperson_person_key
       , SUM(gross_amount) AS gross_amount
 
@@ -12,11 +12,11 @@ WITH fact_target_salesperson__gross_amount AS (
     SELECT 
       year_month
       , salesperson_person_key
-      , COALESCE(stg_fact_target_salesperson.target_gross_amount, 0) AS target_gross_amount
-      , COALESCE(fact_target_salesperson__gross_amount.gross_amount, 0) AS gross_amount
+      , COALESCE(fact_target.target_gross_amount, 0) AS target_gross_amount
+      , COALESCE(fact_actual.gross_amount, 0) AS gross_amount
 
-    FROM  fact_target_salesperson__gross_amount 
-    FULL OUTER JOIN {{ref('stg_fact_target_salesperson')}} AS stg_fact_target_salesperson
+    FROM  fact_target_salesperson__gross_amount AS fact_actual
+    FULL OUTER JOIN {{ref('stg_fact_target_salesperson')}} AS fact_target
       USING (year_month, salesperson_person_key)
 )
 
