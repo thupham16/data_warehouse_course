@@ -12,7 +12,7 @@ WITH fact_target_salesperson__gross_amount AS (
     SELECT 
       year_month
       , salesperson_person_key
-      , COALESCE(stg_fact_target_salesperson.target_revenue, 0) AS target_revenue
+      , COALESCE(stg_fact_target_salesperson.target_gross_amount, 0) AS target_gross_amount
       , COALESCE(fact_target_salesperson__gross_amount.gross_amount, 0) AS gross_amount
 
     FROM  fact_target_salesperson__gross_amount 
@@ -22,7 +22,7 @@ WITH fact_target_salesperson__gross_amount AS (
 
 , fact_target_salesperson__calculate AS (
     SELECT *
-      , gross_amount/ target_revenue AS ratio_achieve
+      , gross_amount/ target_gross_amount AS ratio_achieve
     FROM fact_target_salesperson__consolidate
 )
 
@@ -39,7 +39,7 @@ WITH fact_target_salesperson__gross_amount AS (
 SELECT
   year_month
   , salesperson_person_key
-  , target_revenue
+  , target_gross_amount
   , gross_amount
   , ratio_achieve
   , is_achieved

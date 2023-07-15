@@ -10,7 +10,7 @@ models:
         tests:
           - not_null  
 
-      - name: target_revenue
+      - name: target_gross_amount
         tests:
           - not_null  
 
@@ -22,7 +22,7 @@ models:
         tests:
           - not_null
           - dbt_utils.expression_is_true:
-              expression: '=gross_amount/ target_revenue'
+              expression: '=gross_amount/ target_gross_amount'
 
       - name: is_achieved
         tests:
