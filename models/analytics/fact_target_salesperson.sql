@@ -22,7 +22,7 @@ WITH fact_target_salesperson__gross_amount AS (
 
 , fact_target_salesperson__calculate AS (
     SELECT *
-      , gross_amount/ target_gross_amount AS ratio_achieve
+      , gross_amount/ NULLIF(target_gross_amount, 0) AS ratio_achieve
     FROM fact_target_salesperson__consolidate
 )
 
@@ -32,7 +32,7 @@ WITH fact_target_salesperson__gross_amount AS (
           WHEN ratio_achieve BETWEEN 0 AND 0.8 THEN 'Not Achieved'
           WHEN ratio_achieve > 0.8 THEN 'Achieved'
           ELSE 'Undefined'
-        END AS is_achieved    
+        END AS is_achieved
     FROM fact_target_salesperson__calculate
 )
 
