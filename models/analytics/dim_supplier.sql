@@ -40,10 +40,10 @@ WITH dim_purchasing_supplier__source AS (
 )
 
 SELECT 
-  dim_supplier.supplier_key,
-  dim_supplier.supplier_name,
-  dim_supplier.supplier_category_key,
-  COALESCE(dim_supplier_category.supplier_category_name,'Undefined') AS supplier_category_name
+  dim_supplier.supplier_key
+  , dim_supplier.supplier_name
+  , dim_supplier.supplier_category_key
+  , COALESCE(dim_supplier_category.supplier_category_name,'Error') AS supplier_category_name
 FROM dim_purchasing_supplier__add_undefined_record AS dim_supplier
 LEFT JOIN {{ ref ('stg_dim_supplier_category')}} AS dim_supplier_category
-ON dim_supplier.supplier_category_key = dim_supplier_category.supplier_category_key
+  ON dim_supplier.supplier_category_key = dim_supplier_category.supplier_category_key
