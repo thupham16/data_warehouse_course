@@ -10,6 +10,7 @@ WITH fact_purchase_order__source AS (
       , delivery_method_id AS delivery_method_key
       , contact_person_id AS contact_person_key
       , order_date
+      , expected_delivery_date
       , is_order_finalized
     FROM fact_purchase_order__source
 )
@@ -21,6 +22,7 @@ WITH fact_purchase_order__source AS (
       , CAST(delivery_method_key AS INTEGER) AS delivery_method_key
       , CAST(contact_person_key AS INTEGER) AS contact_person_key
       , CAST(order_date AS DATE) AS order_date
+      , CAST(expected_delivery_date AS DATE) AS expected_delivery_date
       , CAST(is_order_finalized AS BOOLEAN) AS is_order_finalized_boolean
 
     FROM fact_purchase_order__rename_column
@@ -42,5 +44,6 @@ SELECT
   , COALESCE(delivery_method_key, 0) AS delivery_method_key
   , COALESCE(contact_person_key, 0) AS contact_person_key
   , order_date
+  , expected_delivery_date
   , is_order_finalized
 FROM fact_purchase_order__convert_boolean
