@@ -31,12 +31,22 @@ WITH fact_customer_snapshot__source AS (
     USING (customer_key, year_month)
 )
 
+, fact_customer_snapshot__cleanse  AS (
+  SELECT 
+    fact_customer_snapshot__calculation.*
+
+  FROM fact_customer_snapshot__calculation 
+  JOIN {{ref('dim_customer_attribute')}}
+    ON dim_customer_attribute.customer_key = fact_customer_snapshot__calculation.customer_key
+    AND year_month BETWEEN start_month AND end_month
+)
+
 , fact_customer_snapshot__percentile AS (
   SELECT *
   , PERCENT_RANK() OVER (PARTITION BY year_month ORDER BY sales_amount) AS sales_amount_percentile_rank
   , PERCENT_RANK() OVER (PARTITION BY year_month ORDER BY life_time_sales_amount) AS life_time_sales_amount_percentile_rank  
 
-  FROM fact_customer_snapshot__calculation
+  FROM fact_customer_snapshot__cleanse
 )
 
 , fact_customer_snapshot__segmentation AS (
