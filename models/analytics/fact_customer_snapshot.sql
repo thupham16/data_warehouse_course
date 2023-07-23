@@ -24,11 +24,19 @@ WITH fact_customer_snapshot__source AS (
     customer_key
     , year_month
     , COALESCE(fact_customer_snapshot__source.sales_amount, 0) AS sales_amount
-    , SUM(COALESCE(fact_customer_snapshot__source.sales_amount, 0)) OVER (PARTITION BY customer_key 
-    ORDER BY year_month) AS life_time_sales_amount
-    , LAG(fact_customer_snapshot__source.sales_amount, 1) OVER (PARTITION BY customer_key 
-    ORDER BY year_month) AS last_month_sales_amount
-    , SUM(fact_customer_snapshot__source.sales_amount) OVER (PARTITION BY customer_key ORDER BY year_month ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) AS l12m_sales_amount
+    , SUM(COALESCE(fact_customer_snapshot__source.sales_amount, 0)) OVER (
+      PARTITION BY customer_key 
+      ORDER BY year_month) 
+      AS life_time_sales_amount
+    , LAG(fact_customer_snapshot__source.sales_amount, 1) OVER (
+      PARTITION BY customer_key 
+      ORDER BY year_month) 
+      AS last_month_sales_amount
+    , SUM(fact_customer_snapshot__source.sales_amount) OVER (
+      PARTITION BY customer_key 
+      ORDER BY year_month 
+      ROWS BETWEEN 11 PRECEDING AND CURRENT ROW) 
+      AS l12m_sales_amount
   FROM fact_customer_snapshot__densed 
   LEFT JOIN fact_customer_snapshot__source
     USING (customer_key, year_month)
