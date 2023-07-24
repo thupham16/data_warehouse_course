@@ -98,6 +98,7 @@ SELECT
   , category_key
   , COALESCE(dim_external_category.category_name,'Undefined') AS category_name
   , COALESCE(dim_external_category.parent_category_key, 0) AS parent_category_key
+  , COALESCE(dim_external_category.parent_category_name, 'Undefined') AS parent_category_name
   , COALESCE(dim_external_category.category_level, 0) AS category_level
 
 FROM dim_product__join_1
