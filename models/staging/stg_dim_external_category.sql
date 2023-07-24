@@ -24,9 +24,9 @@ WITH dim_external_category__source AS (
 , dim_external_category__enrich AS (
   SELECT
     dim_category.*
-    , dim_parent_category.category_name AS parent_category_name
+    , COALESCE(dim_parent_category.category_name, 'Invalid') AS parent_category_name
   FROM dim_external_category__cast_type AS dim_category
-  JOIN dim_external_category__cast_type AS dim_parent_category
+  LEFT JOIN dim_external_category__cast_type AS dim_parent_category
     ON dim_category.parent_category_key = dim_parent_category.category_key
  )
 
