@@ -60,7 +60,7 @@ WITH dim_product__souce AS (
       , COALESCE(dim_unit_package_type.package_type_name,'Undefined') AS unit_package_type_name
       , dim_product.outer_package_type_key
       , COALESCE(dim_outer_package_type.package_type_name,'Undefined') AS outer_package_type_name
-      , dim_external_stock_item.category_key
+      , COALESCE(dim_external_stock_item.category_key, 0) AS category_key
       
     FROM dim_product__convert_boolean AS dim_product
 
