@@ -96,10 +96,16 @@ SELECT
   , outer_package_type_key
   , outer_package_type_name
   , category_key
-  , COALESCE(dim_external_category.category_name,'Undefined') AS category_name
-  , COALESCE(dim_external_category.parent_category_key, 0) AS parent_category_key
-  , COALESCE(dim_external_category.parent_category_name, 'Undefined') AS parent_category_name
-  , COALESCE(dim_external_category.category_level, 0) AS category_level
+  , COALESCE(dim_category.category_name,'Undefined') AS category_name
+  , COALESCE(dim_category.category_key_level_1, 0) AS category_key_level_1
+  , COALESCE(dim_category.category_name_level_1, 'Undefined') AS category_name_level_1
+  , COALESCE(dim_category.category_key_level_2, 0) AS category_key_level_2
+  , COALESCE(dim_category.category_name_level_2, 'Undefined') AS category_name_level_2
+  , COALESCE(dim_category.category_key_level_3, 0) AS category_key_level_3
+  , COALESCE(dim_category.category_name_level_3, 'Undefined') AS category_name_level_3
+  , COALESCE(dim_category.category_key_level_4, 0) AS category_key_level_4
+  , COALESCE(dim_category.category_name_level_4, 'Undefined') AS category_name_level_4
+  , COALESCE(dim_category.category_level, 0) AS category_level
 
 FROM dim_product__join_1
-LEFT JOIN {{ref('stg_dim_external_category')}} AS dim_external_category USING (category_key)
+LEFT JOIN {{ref('dim_category')}} AS dim_category USING (category_key)
