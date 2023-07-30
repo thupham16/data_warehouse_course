@@ -1,98 +1,114 @@
 WITH dim_category AS (
   SELECT *
-  FROM data-modeling-370410.wide_world_importers_dwh_staging.stg_dim_external_category
+  FROM {{ref('dim_category')}}
 )
 
-, dim_category_map_bridge__depth_0 AS (
-  SELECT 
-    category_key AS parent_category_key
+, dim_category_map_bridge__parent_level_1 AS (
+  SELECT  
+    category_key_level_1 AS parent_category_key
+    , category_name_level_1 AS parent_category_name
     , category_key AS child_category_key
-    , 0 AS depth_from_parent
+    , category_name AS child_category_name
+    , 1 AS parent_category_level
+    , category_level AS child_category_level
+    , category_level - 1 AS depth_from_parent
   FROM dim_category
+  ORDER BY 1,2 
 )
 
-, dim_category_map_bridge__depth_1 AS (
-  SELECT parent_category_key 
+, dim_category_map_bridge__parent_level_2 AS (
+  SELECT  
+    category_key_level_2 AS parent_category_key
+    , category_name_level_2 AS parent_category_name
     , category_key AS child_category_key
-    , 1 AS depth_from_parent
+    , category_name AS child_category_name
+    , 2 AS parent_category_level
+    , category_level AS child_category_level
+    , category_level - 2 AS depth_from_parent
   FROM dim_category
-  WHERE parent_category_key <> 0
+  WHERE category_key_level_2 <> 0
+  ORDER BY 1,2 
 )
 
-, dim_category_role_playing__parent AS (
-      SELECT parent_category_key AS grand_parent_category_key
-        , category_key AS parent_category_key
-      FROM dim_category
+, dim_category_map_bridge__parent_level_3 AS (
+  SELECT  
+    category_key_level_3 AS parent_category_key
+    , category_name_level_3 AS parent_category_name
+    , category_key AS child_category_key
+    , category_name AS child_category_name
+    , 3 AS parent_category_level
+    , category_level AS child_category_level
+    , category_level - 3 AS depth_from_parent
+  FROM dim_category
+  WHERE category_key_level_3 <> 0
+  ORDER BY 1,2 
 )
 
-, dim_category_map_bridge__depth_2 AS (
-    SELECT 
-      -- parent_category_key
-      -- , category_key AS child_category_key
-      -- , grand_parent_category_key
-      grand_parent_category_key AS parent_category_key
-      , category_key AS child_category_key
-      , 2 AS depth_from_parent
-    FROM dim_category
-    LEFT JOIN dim_category_role_playing__parent
-    USING (parent_category_key)
-    WHERE grand_parent_category_key <> 0
+, dim_category_map_bridge__parent_level_4 AS (
+  SELECT  
+    category_key_level_4 AS parent_category_key
+    , category_name_level_4 AS parent_category_name
+    , category_key AS child_category_key
+    , category_name AS child_category_name
+    , 4 AS parent_category_level
+    , category_level AS child_category_level
+    , category_level - 4 AS depth_from_parent
+  FROM dim_category
+  WHERE category_key_level_4 <> 0
+  ORDER BY 1,2 
 )
 
-, dim_category_role_playing__grand_parent AS (
-      SELECT parent_category_key AS grand_grand_parent_category_key
-        , category_key AS grand_parent_category_key
-      FROM dim_category
-)
-
-, dim_category_map_bridge__depth_3 AS (
-    SELECT 
-      -- category_key AS child_category_key
-      -- , parent_category_key
-      -- , dim_category_role_playing__parent.grand_parent_category_key
-      -- , grand_grand_parent_category_key
-      grand_grand_parent_category_key AS parent_category_key
-      , category_key AS child_category_key
-      , 3 as depth_from_parent
-
-    FROM dim_category
-    LEFT JOIN dim_category_role_playing__parent
-    USING (parent_category_key)
-    LEFT JOIN dim_category_role_playing__grand_parent
-    ON dim_category_role_playing__grand_parent.grand_parent_category_key = dim_category_role_playing__parent.grand_parent_category_key
-    WHERE grand_grand_parent_category_key <> 0
-)
-
-, dim_category_map_bridge__union_level AS (
-  SELECT *
-  FROM dim_category_map_bridge__depth_0
-
-  UNION ALL
-
-  SELECT *
-  FROM dim_category_map_bridge__depth_1
-
-  UNION ALL
-
-  SELECT *
-  FROM dim_category_map_bridge__depth_2
-
-  UNION ALL
-
-  SELECT *
-  FROM dim_category_map_bridge__depth_3
+, dim_category_map_bridge__union AS (
+    SELECT
+      parent_category_key
+      , parent_category_name
+      , child_category_key
+      , child_category_name
+      , parent_category_level
+      , child_category_level
+      , depth_from_parent
+    FROM dim_category_map_bridge__parent_level_1
+    
+    UNION ALL
+    SELECT
+      parent_category_key
+      , parent_category_name
+      , child_category_key
+      , child_category_name
+      , parent_category_level
+      , child_category_level
+      , depth_from_parent
+    FROM dim_category_map_bridge__parent_level_2
+    
+    UNION ALL
+    SELECT
+      parent_category_key
+      , parent_category_name
+      , child_category_key
+      , child_category_name
+      , parent_category_level
+      , child_category_level
+      , depth_from_parent
+    FROM dim_category_map_bridge__parent_level_3
+    
+    UNION ALL
+    SELECT
+      parent_category_key
+      , parent_category_name
+      , child_category_key
+      , child_category_name
+      , parent_category_level
+      , child_category_level
+      , depth_from_parent
+    FROM dim_category_map_bridge__parent_level_4
 )
 
 SELECT
-  dim_category_map_bridge.parent_category_key
-  , dim_parent_category.category_name AS parent_category_name
-  , dim_category_map_bridge.child_category_key 
-  , dim_category.category_name AS child_category_name
+  parent_category_key
+  , parent_category_name
+  , child_category_key
+  , child_category_name
+  , parent_category_level
+  , child_category_level
   , depth_from_parent
-
-FROM dim_category_map_bridge__union_level AS dim_category_map_bridge
-LEFT JOIN {{ref('stg_dim_external_category')}} AS dim_category
-    ON dim_category_map_bridge.child_category_key = dim_category.category_key
-
-LEFT JOIN {{ref('stg_dim_external_category')}} AS dim_parent_category
-    ON dim_category_map_bridge.parent_category_key = dim_parent_category.category_key
+FROM dim_category_map_bridge__union
