@@ -4,10 +4,9 @@ WITH dim_customer__source AS (
 )
 , dim_customer__rename AS (
   SELECT  
-    customer_id AS customer_key
-    , customer_id
+    customer_id
     , customer_name 
-    , bill_to_customer_id AS bill_to_customer_key
+    , bill_to_customer_id
     , is_statement_sent AS is_statement_sent_boolean
     , is_on_credit_hold AS is_on_credit_hold_boolean
     , payment_days
@@ -25,10 +24,9 @@ WITH dim_customer__source AS (
 
 , dim_customer__cast_type AS (
   SELECT 
-    CAST (customer_key AS INTEGER) AS customer_key
-    , CAST (customer_id AS INTEGER) AS customer_id
+    CAST (customer_id AS INTEGER) AS customer_id
     , CAST (customer_name AS STRING) AS customer_name
-    , CAST (bill_to_customer_key AS INTEGER) AS bill_to_customer_key
+    , CAST (bill_to_customer_id AS INTEGER) AS bill_to_customer_id
     , CAST (is_statement_sent_boolean AS BOOLEAN) AS is_statement_sent_boolean
     , CAST (is_on_credit_hold_boolean AS BOOLEAN) AS is_on_credit_hold_boolean
     , CAST (payment_days AS INTEGER) AS payment_days
@@ -61,10 +59,9 @@ WITH dim_customer__source AS (
 
 , dim_customer__add_undefined_record AS (
   SELECT 
-    customer_key
-    , customer_id
+    customer_id
     , customer_name
-    , bill_to_customer_key
+    , bill_to_customer_id
     , is_statement_sent
     , is_on_credit_hold
     , payment_days
@@ -81,10 +78,9 @@ WITH dim_customer__source AS (
   UNION ALL
 
   SELECT
-    0 AS customer_key
-    , 0 AS customer_id
+    0 AS customer_id
     , 'Undefined' AS customer_name
-    , 0 AS bill_to_customer_key
+    , 0 AS bill_to_customer_id
     , 'Undefined' AS is_statement_sent
     , 'Undefined' AS is_on_credit_hold
     , CAST(NULL AS INTEGER) AS payment_days
@@ -104,10 +100,9 @@ WITH dim_customer__source AS (
   WHERE CURRENT_DATE() BETWEEN begin_effective_date AND end_effective_date
 )
 SELECT 
-  dim_customer.customer_key
-  , dim_customer.customer_id
+  dim_customer.customer_id
   , dim_customer.customer_name
-  , dim_customer.bill_to_customer_key
+  , dim_customer.bill_to_customer_id
   , dim_bill_to_customer.customer_name AS bill_to_customer_name
   , dim_customer.is_statement_sent
   , dim_customer.is_on_credit_hold
@@ -145,6 +140,6 @@ LEFT JOIN {{ref ('dim_person')}}
   ON dim_person.person_key = dim_customer.primary_contact_person_key
 
 LEFT JOIN dim_customer__add_undefined_record AS dim_bill_to_customer
-  ON dim_customer.bill_to_customer_key = dim_bill_to_customer.customer_key
+  ON dim_customer.bill_to_customer_id = dim_bill_to_customer.customer_id
 LEFT JOIN dim_customer__current_membership
-  ON dim_customer__current_membership.customer_key = dim_customer.customer_key
+  ON dim_customer__current_membership.customer_id = dim_customer.customer_id
