@@ -94,13 +94,31 @@ WITH dim_customer__source AS (
     , 0 AS primary_contact_person_key
 )
 
+, dim_customer__integrate_scd_2 AS ( -- Slowly changing dimension type 2 allow to display membership overtime, including start date and end date
+  SELECT 
+    dim_customer.*
+    , COALESCE(dim_customer_membership.membership, 'None') AS membership
+    , COALESCE(dim_customer_membership.begin_effective_date, '2013-01-01') AS begin_effective_date
+    , COALESCE(dim_customer_membership.end_effective_date, '2050-12-31') AS end_effective_date
+  FROM dim_customer__add_undefined_record AS dim_customer
+  LEFT JOIN {{ref('stg_dim_customer_membership')}} AS dim_customer_membership
+  USING (customer_id)
+)
+
+, dim_customer__generate_key AS (
+  SELECT *
+    , FARM_FINGERPRINT(CONCAT(customer_id, begin_effective_date)) AS customer_key
+  FROM dim_customer__integrate_scd_2 AS dim_customer
+)
+
 , dim_customer__current_membership AS (
   SELECT *
   FROM {{ref('stg_dim_customer_membership')}}
   WHERE CURRENT_DATE() BETWEEN begin_effective_date AND end_effective_date
 )
 SELECT 
-  dim_customer.customer_id
+  dim_customer.customer_key
+  , dim_customer.customer_id
   , dim_customer.customer_name
   , dim_customer.bill_to_customer_id
   , dim_bill_to_customer.customer_name AS bill_to_customer_name
@@ -123,7 +141,7 @@ SELECT
   , dim_customer.primary_contact_person_key
   , dim_person.full_name AS primary_contact_full_name
   , COALESCE(dim_customer__current_membership.membership, 'None') AS current_membership
-FROM dim_customer__add_undefined_record AS dim_customer 
+FROM dim_customer__generate_key AS dim_customer 
 LEFT JOIN {{ref ('stg_dim_customer_category')}} AS dim_customer_category 
   ON dim_customer_category.customer_category_key = dim_customer.customer_category_key
 
