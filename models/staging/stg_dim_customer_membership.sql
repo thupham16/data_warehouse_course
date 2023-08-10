@@ -5,7 +5,7 @@ WITH dim_customer_membership__source AS (
 
 , dim_customer_membership__rename_column AS (
   SELECT
-    customer_id AS customer_key
+    customer_id
     , membership
     , begin_effective_date
     , end_effective_date
@@ -15,7 +15,7 @@ WITH dim_customer_membership__source AS (
 
 , dim_customer_membership__cast_type AS (
   SELECT 
-    CAST(customer_key AS INTEGER) AS customer_key
+    CAST(customer_id AS INTEGER) AS customer_id
     , CAST(membership AS STRING) AS membership
     , CAST(begin_effective_date AS DATE) AS begin_effective_date
     , CAST(end_effective_date AS DATE) AS end_effective_date
@@ -24,7 +24,7 @@ WITH dim_customer_membership__source AS (
 )
 
 SELECT 
-  customer_key
+  customer_id
   , membership
   , begin_effective_date
   , end_effective_date
