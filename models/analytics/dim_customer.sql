@@ -98,6 +98,11 @@ WITH dim_customer__source AS (
     , 0 AS primary_contact_person_key
 )
 
+, dim_customer__current_membership AS (
+  SELECT *
+  FROM {{ref('stg_dim_customer_membership')}}
+  WHERE CURRENT_DATE() BETWEEN begin_effective_date AND end_effective_date
+)
 SELECT 
   dim_customer.customer_key
   , dim_customer.customer_id
@@ -122,7 +127,7 @@ SELECT
   , dim_customer.account_opened_date
   , dim_customer.primary_contact_person_key
   , dim_person.full_name AS primary_contact_full_name
-  , COALESCE(dim_customer_membership.membership, 'None') AS current_membership
+  , COALESCE(dim_customer__current_membership.membership, 'None') AS current_membership
 FROM dim_customer__add_undefined_record AS dim_customer 
 LEFT JOIN {{ref ('stg_dim_customer_category')}} AS dim_customer_category 
   ON dim_customer_category.customer_category_key = dim_customer.customer_category_key
@@ -141,6 +146,5 @@ LEFT JOIN {{ref ('dim_person')}}
 
 LEFT JOIN dim_customer__add_undefined_record AS dim_bill_to_customer
   ON dim_customer.bill_to_customer_key = dim_bill_to_customer.customer_key
-LEFT JOIN {{ref('stg_dim_customer_membership')}} AS dim_customer_membership
-  ON dim_customer_membership.customer_key = dim_customer.customer_key
-  AND CURRENT_DATE() BETWEEN dim_customer_membership.begin_effective_date AND dim_customer_membership.end_effective_date
+LEFT JOIN dim_customer__current_membership
+  ON dim_customer__current_membership.customer_key = dim_customer.customer_key
