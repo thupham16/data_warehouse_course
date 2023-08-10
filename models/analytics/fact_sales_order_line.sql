@@ -55,7 +55,7 @@ SELECT
           fact_sales_order_line.package_type_key
           )
    ) AS sales_order_line_indicator_key
-
+  , COALESCE(fact_sales_order.membership, 'None') AS membership
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
 ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
