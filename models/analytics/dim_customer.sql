@@ -92,6 +92,24 @@ WITH dim_customer__source AS (
     , 0 AS delivery_city_key
     , CAST(NULL AS DATE) AS account_opened_date
     , 0 AS primary_contact_person_key
+
+  UNION ALL
+
+  SELECT
+    -1 AS customer_id
+    , 'Invalid' AS customer_name
+    , -1 AS bill_to_customer_id
+    , 'Invalid' AS is_statement_sent
+    , 'Invalid' AS is_on_credit_hold
+    , CAST(NULL AS INTEGER) AS payment_days
+    , CAST(NULL AS INTEGER) AS standard_discount_percentage
+    , CAST(NULL AS INTEGER) AS credit_limit
+    , -1 AS customer_category_key
+    , -1 AS buying_group_key
+    , -1 AS delivery_method_key
+    , -1 AS delivery_city_key
+    , CAST(NULL AS DATE) AS account_opened_date
+    , -1 AS primary_contact_person_key
 )
 
 , dim_customer__integrate_scd_2 AS ( -- Slowly changing dimension type 2 allow to display membership overtime, including start date and end date
@@ -141,6 +159,9 @@ SELECT
   , dim_customer.primary_contact_person_key
   , dim_person.full_name AS primary_contact_full_name
   , COALESCE(dim_customer__current_membership.membership, 'None') AS current_membership
+  , dim_customer.membership
+  , dim_customer.begin_effective_date
+  , dim_customer.end_effective_date
 FROM dim_customer__generate_key AS dim_customer 
 LEFT JOIN {{ref ('stg_dim_customer_category')}} AS dim_customer_category 
   ON dim_customer_category.customer_category_key = dim_customer.customer_category_key
