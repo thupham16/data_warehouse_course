@@ -30,24 +30,44 @@ WITH fact_sales__source AS (
   ORDER BY 1
 )
 
+, dim_year_month AS (
+  SELECT DISTINCT year_month
+  FROM {{ref('dim_date')}}
+)
+
+, fact_cohort__densed AS ( -- to display all year month for each cohort => continuous period
+  SELECT cohort_month
+  , year_month AS order_month
+  FROM fact_cohort__cohort_size 
+  CROSS JOIN dim_year_month
+  WHERE year_month BETWEEN cohort_month AND cohort_month + INTERVAL '12' MONTH
+)
+
 , fact_cohort__retention AS (
   SELECT  
     fact_sales__first_order.first_order_month AS cohort_month
-    -- , fact_sales.order_month
-    , DATE_DIFF(fact_sales.order_month, fact_sales__first_order.first_order_month, MONTH)  AS period
-    , COUNT(customer_key) AS active_user
+    , fact_sales.order_month
+    , customer_key
   FROM fact_sales__transaction  AS fact_sales
   LEFT JOIN fact_sales__first_order USING (customer_key)
-  GROUP BY 1,2
-  order by 1,2
 )
 
+, fact_cohort__retention_densed AS (
+  SELECT  
+    cohort_month
+    , order_month
+    , DATE_DIFF(order_month, cohort_month, MONTH)  AS period
+    , COUNT(customer_key) AS active_user
+  FROM fact_cohort__densed
+  LEFT JOIN fact_cohort__retention USING (cohort_month, order_month)
+  GROUP BY 1,2
+)
 SELECT
   cohort_month
   , fact_cohort__retention.period
   , fact_cohort__cohort_size.cohort_size
   , fact_cohort__retention.active_user
   , fact_cohort__retention.active_user*100 / fact_cohort__cohort_size.cohort_size as percentage
-FROM fact_cohort__retention
+FROM fact_cohort__retention_densed AS fact_cohort__retention
 LEFT JOIN fact_cohort__cohort_size USING (cohort_month)
 ORDER BY 1,2
