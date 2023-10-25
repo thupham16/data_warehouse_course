@@ -38,9 +38,10 @@ WITH fact_sales__source AS (
 , fact_cohort__densed AS ( -- to display all year month for each cohort => continuous period
   SELECT cohort_month
   , year_month AS order_month
+  , DATE_DIFF(year_month, cohort_month, MONTH)  AS period
   FROM fact_cohort__cohort_size 
   CROSS JOIN dim_year_month
-  WHERE year_month BETWEEN cohort_month AND cohort_month + INTERVAL '12' MONTH
+  WHERE DATE_DIFF(year_month, cohort_month, MONTH) BETWEEN 0 AND 12
 )
 
 , fact_cohort__retention AS (
@@ -56,11 +57,11 @@ WITH fact_sales__source AS (
   SELECT  
     cohort_month
     , order_month
-    , DATE_DIFF(order_month, cohort_month, MONTH)  AS period
+    , period
     , COUNT(customer_key) AS active_user
   FROM fact_cohort__densed
   LEFT JOIN fact_cohort__retention USING (cohort_month, order_month)
-  GROUP BY 1,2
+  GROUP BY 1, 2, 3
 )
 SELECT
   cohort_month
