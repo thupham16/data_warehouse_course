@@ -7,9 +7,10 @@ WITH fact_sales__source AS (
 , fact_sales__first_order AS (
   SELECT 
     DATE_TRUNC(MIN(order_date), MONTH) AS first_order_month
+    , DATE_TRUNC(MAX(order_date), MONTH) AS latest_order_month
     , customer_key
   FROM fact_sales__source
-  GROUP BY 2
+  GROUP BY 3
   ORDER BY 1
 )
 
@@ -36,12 +37,13 @@ WITH fact_sales__source AS (
 )
 
 , fact_cohort__densed AS ( -- to display all year month for each cohort => continuous period
-  SELECT cohort_month
-  , year_month AS order_month
-  , DATE_DIFF(year_month, cohort_month, MONTH)  AS period
-  FROM fact_cohort__cohort_size 
+  SELECT DISTINCT 
+    first_order_month AS cohort_month
+    , year_month AS order_month
+  FROM fact_sales__first_order 
   CROSS JOIN dim_year_month
-  WHERE DATE_DIFF(year_month, cohort_month, MONTH) BETWEEN 0 AND 12
+  WHERE year_month BETWEEN first_order_month AND latest_order_month
+  ORDER BY 1,2
 )
 
 , fact_cohort__retention AS (
@@ -57,12 +59,14 @@ WITH fact_sales__source AS (
   SELECT  
     cohort_month
     , order_month
-    , period
+    , DATE_DIFF(order_month, cohort_month, MONTH)  AS period
     , COUNT(customer_key) AS active_user
   FROM fact_cohort__densed
   LEFT JOIN fact_cohort__retention USING (cohort_month, order_month)
-  GROUP BY 1, 2, 3
+  GROUP BY 1,2,3
+  ORDER BY 1,2
 )
+
 SELECT
   cohort_month
   , fact_cohort__retention.period
