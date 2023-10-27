@@ -4,6 +4,13 @@ WITH fact_sales__source AS (
   FROM {{ref('fact_sales_order_line')}}
 )
 
+, fact_sales__transaction AS (
+  SELECT DISTINCT
+    DATE_TRUNC(order_date, MONTH) AS order_month
+    , customer_key
+  FROM fact_sales__source
+)
+
 , fact_sales__first_latest_order_month AS (
   SELECT 
     customer_key
@@ -11,13 +18,6 @@ WITH fact_sales__source AS (
     , DATE_TRUNC(MAX(order_date), MONTH) AS latest_order_month
   FROM fact_sales__source
   GROUP BY 1
-)
-
-, fact_sales__transaction AS (
-  SELECT DISTINCT
-    DATE_TRUNC(order_date, MONTH) AS order_month
-    , customer_key
-  FROM fact_sales__source
 )
 
 , fact_cohort__cohort_size  as (
