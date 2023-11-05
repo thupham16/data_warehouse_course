@@ -56,9 +56,13 @@ SELECT
           )
    ) AS sales_order_line_indicator_key
   , COALESCE(fact_sales_order.membership, 'None') AS membership
+  , COALESCE(dim_product.product_name, 'Invalid') AS product_name
+  , COALESCE(dim_product.brand_name, 'Invalid') AS brand_name
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
 ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
 LEFT JOIN {{ref('stg_dim_package_type')}} AS dim_package_type
 ON fact_sales_order_line.package_type_key = dim_package_type.package_type_key
+LEFT JOIN {{ref('dim_product')}} AS dim_product
+ON fact_sales_order_line.product_key = dim_product.product_key
 
