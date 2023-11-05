@@ -40,6 +40,7 @@ SELECT
   , COALESCE(fact_sales_order.picked_by_person_key,-1) AS picked_by_person_key
   , COALESCE(fact_sales_order.salesperson_person_key,-1) AS salesperson_person_key
   , fact_sales_order.customer_key
+  , dim_customer.customer_name --temporary for viz
   , fact_sales_order_line.quantity
   , fact_sales_order_line.unit_price
   , fact_sales_order_line.quantity * fact_sales_order_line.unit_price AS gross_amount
@@ -56,7 +57,7 @@ SELECT
           )
    ) AS sales_order_line_indicator_key
   , COALESCE(fact_sales_order.membership, 'None') AS membership
-  , COALESCE(dim_product.product_name, 'Invalid') AS product_name
+  , COALESCE(dim_product.product_name, 'Invalid') AS product_name --temporary for viz
   , COALESCE(dim_product.category_name, 'Invalid') AS category_name
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
@@ -65,4 +66,6 @@ LEFT JOIN {{ref('stg_dim_package_type')}} AS dim_package_type
 ON fact_sales_order_line.package_type_key = dim_package_type.package_type_key
 LEFT JOIN {{ref('dim_product')}} AS dim_product
 ON fact_sales_order_line.product_key = dim_product.product_key
+LEFT JOIN {{ref('dim_customer')}} AS dim_customer 
+ON fact_sales_order.customer_key = dim_customer.customer_key
 
