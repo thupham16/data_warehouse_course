@@ -23,7 +23,7 @@ WITH dim_external_stock_item__source AS (
    SELECT
     product_key
     , category_key
-   FROM dim_external_stock_item__enrich
+   FROM dim_external_stock_item__cast_type
 
    UNION ALL
 
