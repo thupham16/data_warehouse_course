@@ -57,7 +57,7 @@ SELECT
    ) AS sales_order_line_indicator_key
   , COALESCE(fact_sales_order.membership, 'None') AS membership
   , COALESCE(dim_product.product_name, 'Invalid') AS product_name
-  , COALESCE(dim_product.brand_name, 'Invalid') AS brand_name
+  , COALESCE(dim_product.category_name, 'Invalid') AS category_name
 FROM fact_sales_order_line__cast_type AS fact_sales_order_line
 LEFT JOIN {{ref('stg_fact_sales_order')}} AS fact_sales_order
 ON fact_sales_order_line.sales_order_key = fact_sales_order.sales_order_key
