@@ -24,7 +24,7 @@ WITH fact_sales_order_line__source AS (
     , CAST(sales_order_key AS INTEGER) AS sales_order_key
     , CAST(product_key AS INTEGER) AS product_key
     , CAST(package_type_key AS INTEGER) AS package_type_key
-    , CAST (quantity AS INTEGER) AS quantity
+    , CAST (quantity AS NUMERIC) AS quantity
     , CAST (unit_price AS NUMERIC) AS unit_price
     , CAST (tax_rate AS NUMERIC) AS tax_rate
     , CAST (picked_quantity AS INTEGER) AS picked_quantity
