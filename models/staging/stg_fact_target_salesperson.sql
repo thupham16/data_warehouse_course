@@ -16,7 +16,7 @@ WITH fact_external_target_salesperson__source AS (
   SELECT 
     CAST(year_month AS DATE) AS year_month
     , CAST(salesperson_person_key AS INTEGER) AS salesperson_person_key
-    , CAST(target_gross_amount AS NUMERIC) AS target_gross_amount
+    , CAST(target_gross_amount AS FLOAT64) AS target_gross_amount
 
   FROM fact_external_target_salesperson__rename_column
 )
