@@ -1,11 +1,12 @@
 WITH fact_rfm__summary AS (
   SELECT 
-    customer_key
-    , MAX(order_date) AS last_active_date
-    , DATE_DIFF('2016-06-1', MAX(order_date), MONTH) AS recency -- Since recency is calculated for a point in time and the dataset last order date is May 31 2015, we will set the 1 day after to calculate recency.
-    , COUNT (DISTINCT sales_order_key) AS frequency
-    , SUM(gross_amount) AS monetary
+    dim_customer.customer_id
+    , MAX(fact_sales_order_line.order_date) AS last_active_date
+    , DATE_DIFF('2016-06-1', MAX(fact_sales_order_line.order_date), MONTH) AS recency -- Since recency is calculated for a point in time and the dataset last order date is May 31 2015, we will set the 1 day after to calculate recency.
+    , COUNT (DISTINCT fact_sales_order_line.sales_order_key) AS frequency
+    , SUM(fact_sales_order_line.gross_amount) AS monetary
   FROM {{ref('fact_sales_order_line')}}
+  LEFT JOIN {{ref('dim_customer')}} USING (customer_key)
   GROUP BY 1
 )
 
